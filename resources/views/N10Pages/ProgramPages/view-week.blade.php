@@ -1,64 +1,84 @@
 @extends('layouts.main-layout')
 
 @section('content')
+    <!--begin::Content wrapper-->
+    <div class="d-flex flex-column flex-column-fluid">
+        <!--begin::Content-->
+        <div id="kt_app_content" class="app-content flex-column-fluid">
+            <!--begin::Content container-->
+            <div id="kt_app_content_container" class="app-container container-xxl">
 
-        <!--begin::Content wrapper-->
-        <div class="d-flex flex-column flex-column-fluid">
-            <!--begin::Content-->
-            <div id="kt_app_content" class="app-content flex-column-fluid">
-                <!--begin::Content container-->
-                <div id="kt_app_content_container" class="app-container container-xxl">
-
-                    <h2>Week : {{ $program_week->week_no }}</h2>
-                    <h2>Assigned Calories : {{ $program_week->assigned_calories }}</h2>
-                    <h2>Assigned Proteins : {{ $program_week->assigned_proteins }}</h2>
+                <h2>Week : {{ $program_week->week_no }}</h2>
+                <p><strong>Assigned Calories :</strong> {{ $program_week->assigned_calories }}</p>
+                <p><strong>Assigned Proteins :</strong> {{ $program_week->assigned_proteins }}</p>
 
 
-                    {{$start_date}}
-                    {{$end_date}}
 
+
+                @php
+                    $period = new DatePeriod(new DateTime($start_date), new DateInterval('P1D'), new DateTime($end_date));
+                @endphp
 
 
                 <div class="row">
 
-                    @foreach ($week_days as $wd)
+                    @foreach ($period as $key => $value)
+                        <div class="col-md-4 mt-5 ">
 
-                    <div class="col-md-4 mt-5 ">
+                            <div class="card h-200px">
+                                <div class="card-body">
+                                    @php
+                                        $found = 0;
+                                    @endphp
+                                    @foreach ($week_days as $wd)
+                                        @if ($wd->day_title == strtolower($value->format('l')))
+                                            @php
+                                                $found = 1;
+                                                $day_no = $wd->day_no;
+                                                $day_id = $wd->id;
+                                            @endphp
+                                        @endif
+                                    @endforeach
 
-                        <div class="card h-200px">
-                            <div class="card-body">
-                               @for ($i=0;$i<7;$i++)
-                                   @php
-                                       $current_date=date('Y-m-d', strtotime($start_date. ' + '.$i.' days'));
-                                   @endphp
-                                    @if(strtolower(date('l', strtotime($current_date))) == $wd->day_title )
-                                        {{$current_date}}
-                                        @php
-                                            $saved_current_date=$current_date;
-                                        @endphp
+                                    @if ($found == 1)
+                                        <h2>Day {{ $day_no }}</h2>
+                                        {{ $value->format('Y-M-d') }} <br>
+                                        {{ $value->format('l') }} <br>
+                                        @if (date('Y-m-d') == $value->format('Y-m-d'))
+                                            @isset($ans_exists[$day_id])
+                                                <span class="badge badge-lg badge-light-success fw-bold my-2">Done</span>
+                                                <a class="btn btn-instagram w-100 mt-3"
+                                                    href="{{ route('assigned.programs.view-day-prepare') }}?id={{ $day_id }}&date={{ $value->format('Y-m-d') }}&last_id={{ $last_id }}">
+                                                    View </a>
+                                            @else
+                                                <a class="btn btn-instagram w-100 mt-15"
+                                                    href="{{ route('assigned.programs.view-day-prepare') }}?id={{ $day_id }}&date={{ $value->format('Y-m-d') }}&last_id={{ $last_id }}">
+                                                    Start </a>
+                                            @endisset
+                                        @elseif (date('Y-m-d') >= $value->format('Y-m-d'))
+                                            <span class="badge badge-lg badge-light-danger fw-bold my-2">Closed</span>
+                                            <a class="btn btn-instagram w-100 mt-3"
+                                                href="{{ route('assigned.programs.view-day-prepare') }}?id={{ $day_id }}&date={{ $value->format('Y-m-d') }}&last_id={{ $last_id }}">
+                                                View </a>
+                                        @endif
+                                    @else
+                                        <h2>Rest Day</h2>
+                                        {{ $value->format('Y-M-d') }} <br>
+                                        {{ $value->format('l') }}
                                     @endif
-                               @endfor
-                                <h1>{{$wd->day_title}}</h1>
-
-                                @if(date("Y-m-d ") >= $saved_current_date)
-                                <a class="btn btn-primary" href="{{route('assigned.programs.view-day',$wd->id)}}"> Open </a>
-
-                                @endif
+                                </div>
                             </div>
+
                         </div>
-
-                    </div>
-
                     @endforeach
                 </div>
 
             </div>
-                <!--end::Content container-->
-            </div>
-            <!--end::Content-->
+            <!--end::Content container-->
         </div>
-        <!--end::Content wrapper-->
-
+        <!--end::Content-->
+    </div>
+    <!--end::Content wrapper-->
 @endsection
 
 @section('page-scripts')

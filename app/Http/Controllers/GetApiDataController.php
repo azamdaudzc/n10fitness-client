@@ -6,6 +6,7 @@ use App\Models\UserCheckin;
 use App\Models\AthleticType;
 use Illuminate\Http\Request;
 use App\Models\CheckinQuestion;
+use App\Models\UserCheckinAnswer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,18 +42,64 @@ class GetApiDataController extends Controller
     }
 
     public function saveCheckinAnswer(Request $request){
-        return $input=$request->all();
-        //set body as raw and json
-        // {
-        //     "checkin_question_id" : 1,
-        //     "answer" : [
-        //         {
-        //         "1" : "ans 1"
-        //         },
-        //         {"2" : "ans 2"}
 
-        //     ]
+        $id=$request->checkin_question_id;
+        $new_data='not_available';
+        $ques_display_order=CheckinQuestion::find($id)->display_order;
+
+        unset($request['question_id']);
+        unset($request['_token']);
+        $input=$request->all();
+        if(UserCheckin::where('user_id',Auth::user()->id)->where('is_completed',null)->exists()){
+            $checkin_id=UserCheckin::where('user_id',Auth::user()->id)->where('is_completed',null)->get()->first()->id;
+        }
+        else{
+            $checkin=UserCheckin::create([
+                'user_id' => Auth::user()->id,
+                'checkin_time' => \Carbon\Carbon::now(),
+            ]);
+            $checkin_id=$checkin->id;
+        }
+        // foreach ($input as $key => $value) {
+        //     $splitted=explode('-',$key);
+        //     if(!is_array($value) &&  is_file($value)){
+        //         $image = $this->saveCheckInAnswerImage($request,$value);
+        //         $value=$image;
+        //     }
+        //     else{
+        //         $value=json_encode($value);
+        //     }
+        //     UserCheckinAnswer::create([
+        //         'user_checkin_id' => $checkin_id,
+        //         'checkin_question_input_id' => $splitted[0],
+        //         'checkin_question_id' => $id,
+        //         'answer' => $value,
+        //     ]);
+
         // }
 
+        foreach (json_decode($request->answer) as  $value) {
+
+            UserCheckinAnswer::create([
+                        'user_checkin_id' => $checkin_id,
+                        'checkin_question_input_id' =>$value->questionId,
+                        'checkin_question_id' => $id,
+                        'answer' => $value->questionVal,
+                    ]);
+        }
+
+        UserCheckin::where('id',$checkin_id)->update(['last_answered_question' =>  $ques_display_order]);
+        if(CheckinQuestion::where('display_order','>',$ques_display_order)->count('id') > 0){
+            $new_data='available';
+        }
+        else{
+            UserCheckin::where('user_id',Auth::user()->id)->update(['is_completed' => 1]);
+        }
+        return response()->json([
+            'new_data' => $new_data,
+        ]);
+
     }
+
+
 }

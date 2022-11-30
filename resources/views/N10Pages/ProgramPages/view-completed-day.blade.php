@@ -56,7 +56,7 @@
                                                                 </td>
                                                                 <td class="w-100px">Weight
                                                                 </td>
-                                                                <td class="w-100px">Reps {{ $exercise_sets[$exercise->id]->rep_min_no }}-{{ $exercise_sets[$exercise->id]->rep_max_no }}
+                                                                <td class="w-100px">Reps
                                                                 </td>
                                                                 <td>RPE</td>
                                                                 <td>Previous
@@ -68,33 +68,19 @@
                                                         <tbody>
                                                             @for ($i = 1; $i <= $exercise_sets[$exercise->id]->set_no; $i++)
                                                                 <tr>
+
                                                                     <td class="w-55px">SET {{ $i }}</td>
-                                                                    <td><input class="w-100" type="number"
-                                                                            name="w_e_{{ $exercise->id }}_s_{{ $i }}"
-                                                                            id="w_e_{{ $exercise->id }}_s_{{ $i }}"
-                                                                            onkeyup="calculateMaxExerted('{{ $exercise->id }}','{{ $i }}','{{ $exercise_sets[$exercise->id]->rpe_no }}')">
-                                                                    </td>
-                                                                    <td><input class="w-100" type="number"
-                                                                            name="r_e_{{ $exercise->id }}_s_{{ $i }}"
-                                                                            id="r_e_{{ $exercise->id }}_s_{{ $i }}"
-                                                                            onkeyup="calculateMaxExerted('{{ $exercise->id }}','{{ $i }}','{{ $exercise_sets[$exercise->id]->rpe_no }}')"
-                                                                            min="{{ $exercise_sets[$exercise->id]->rep_min_no }}"
-                                                                            max="{{ $exercise_sets[$exercise->id]->rep_max_no }}">
-                                                                    </td>
-                                                                    <td class="w-55px">{{ $exercise_sets[$exercise->id]->rpe_no }}</td>
+                                                                    <td>{{$answeres[$exercise->id][$i]->weight}}</td>
+                                                                    <td>{{$answeres[$exercise->id][$i]->reps}}</td>
+                                                                    <td>{{$answeres[$exercise->id][$i]->rpe}}</td>
                                                                     @if($last_exercise_sets!=null && isset($last_exercise_sets[$exercise->exercise_library_id]->weight))
                                                                     <td class="w-55px">{{ $last_exercise_sets[$exercise->exercise_library_id]->weight}}X{{ $last_exercise_sets[$exercise->exercise_library_id]->reps}} R {{ $last_exercise_sets[$exercise->exercise_library_id]->rpe}}</td>
                                                                     @else
                                                                     <td class="w-55px">N/A</td>
                                                                     @endif
-                                                                    <td class="w-55px"
-                                                                        id="ma_e_{{ $exercise->id }}_s_{{ $i }}">
-                                                                        N/A
+                                                                    <td>{{$answeres[$exercise->id][$i]->peak_exterted_max}}</td>
 
-                                                                    </td>
-                                                                    <input type="hidden"
-                                                                    name="mai_e_{{ $exercise->id }}_s_{{ $i }}"
-                                                                    id="mai_e_{{ $exercise->id }}_s_{{ $i }}">
+
                                                                 </tr>
                                                             @endfor
 
@@ -109,17 +95,7 @@
                                         @endforeach
                                     </div>
 
-                                    <div class="box-footer mt-20">
-                                        <button type="submit" class="btn btn-primary me-10" id="crud-form-submit-button" style="float: right">
-                                            <span class="indicator-label">
-                                                Submit
-                                            </span>
-                                            <span class="indicator-progress">
-                                                Please wait... <span
-                                                    class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                                            </span>
-                                        </button>
-                                    </div>
+
                                 </div>
 
                             </div>
@@ -170,7 +146,6 @@
                         success: function(d, status) {
                             if (d.success == true) {
                                 toastr.success(d.msg);
-                                location.reload();
 
                             } else {
                                 toastr.error(d.msg);

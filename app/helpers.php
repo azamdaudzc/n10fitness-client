@@ -15,7 +15,12 @@ function checkinQuestionAvailability()
         $checkin_questions = CheckinQuestion::with('checkinQuestionInputs')
             ->where('display_order', '>', $check_in->last_answered_question)
             ->orderBy('checkin_questions.display_order')->take(1)->get();
-    } else {
+    }
+    else if(!$check_in)
+        {
+            $checkin_questions = CheckinQuestion::with('checkinQuestionInputs')
+            ->orderBy('checkin_questions.display_order')->take(1)->get();
+        } else {
         return false;
     }
 

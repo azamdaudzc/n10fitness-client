@@ -1,7 +1,7 @@
 @extends('layouts.main-layout')
 
 @section('content')
-   
+
         <!--begin::Content wrapper-->
         <div class="d-flex flex-column flex-column-fluid">
             <!--begin::Content-->
@@ -15,37 +15,17 @@
                             <!--begin::Col-->
                             <div class="col-xl-8 mb-5 mb-xl-10">
                                 <!--begin::Engage widget 12-->
-                                <div class="card card-custom bg-body border-0 h-md-100">
-                                    <!--begin::Body-->
-                                    <div class="card-body d-flex justify-content-center flex-wrap ps-xl-15 pe-0">
-                                        <!--begin::Wrapper-->
-                                        <div class="flex-grow-1 mt-2 me-9 me-md-0">
-                                            <!--begin::Title-->
-                                            <div class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5">
-                                                {{ $program->program->title }}
-                                            </div>
-                                            <!--end::Title-->
-                                            <!--begin::Text-->
-                                            <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block">
-                                                <strong>Coach Name :</strong>  {{ $program->program->coach->first_name }}
-                                                {{ $program->program->coach->last_name }}  <br>
-                                               <strong>No Of Weeks :</strong>  {{ $program->program->weeks }}  <br>
-                                               <strong>No Of Days :</strong> {{ $program->program->days }}  <br>
-                                            </span>
-                                            <!--end::Text-->
-                                            <!--begin::Action-->
-                                            <a href="{{ route('assigned.programs.view', $program->id) }}">View</a>
-
-                                            <!--begin::Action-->
-                                        </div>
-                                        <!--begin::Wrapper-->
-                                        <!--begin::Illustration-->
-                                        <img src="assets/media/illustrations/misc/credit-card.png" class="h-175px me-15"
-                                            alt="" />
-                                        <!--end::Illustration-->
+                                <div class="card" style="width: 18rem;">
+                                    <img src="{{asset('assets/media/sample/bodybuilding.png')}}" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                      <h5 class="card-title"> {{ $program->program->title }}</h5>
+                                      <p class="card-text">{{ $program->program->weeks }} Weeks | {{ $program->program->days }} Days
+                                    <br>
+                                Coach : {{ $program->program->coach->first_name }}
+                                {{ $program->program->coach->last_name }}</p>
+                                      <a href="{{ route('assigned.programs.view', $program->id) }}" class="btn btn-light-twitter w-100">View Program</a>
                                     </div>
-                                    <!--end::Body-->
-                                </div>
+                                  </div>
                                 <!--end::Engage widget 12-->
                             </div>
                             <!--end::Col-->
@@ -59,7 +39,7 @@
             <!--end::Content-->
         </div>
         <!--end::Content wrapper-->
-       
+
 @endsection
 
 @section('page-scripts')

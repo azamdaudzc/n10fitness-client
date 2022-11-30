@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\UserControllers\UserClientController;
 use App\Http\Controllers\UserControllers\UserCheckinController;
 use App\Http\Controllers\N10Controllers\AssignedCoachController;
@@ -28,7 +29,7 @@ Route::get('/migratedatabase', function () {
 });
 
 Route::middleware(['auth', 'check_user_type', 'verified'])->group(function () {
-
+    Route::get('/send-email', [EmailController::class, 'index']);
     Route::get('/', function () {
         $data['page_heading'] = "Dashboard";
         $data['sub_page_heading'] = "main dashboard";
@@ -47,8 +48,9 @@ Route::middleware(['auth', 'check_user_type', 'verified'])->group(function () {
     Route::controller(AssignedProgramsController::class)->group(function () {
         Route::get('assigned/programs/index', 'index')->name('assigned.programs.index');
         Route::get('assigned/programs/view/{id?}', 'view')->name('assigned.programs.view');
-        Route::get('assigned/programs/view-week/{id?}', 'view_week')->name('assigned.programs.view-week');
-        Route::get('assigned/programs/view-day/{id?}', 'view_day')->name('assigned.programs.view-day');
+        Route::get('assigned/programs/view-week/{id?}/{last_id?}', 'view_week')->name('assigned.programs.view-week');
+        Route::get('assigned/programs/view-day/{id?}/{last_id?}', 'view_day')->name('assigned.programs.view-day');
+        Route::get('assigned/programs/view-day-prepare', 'view_day_prepare')->name('assigned.programs.view-day-prepare');
         Route::post('assigned/programs/store-day', 'store_day')->name('assigned.programs.store-day');
     });
 
