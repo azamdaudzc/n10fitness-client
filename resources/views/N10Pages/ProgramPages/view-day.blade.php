@@ -99,7 +99,7 @@
                                                                     </td>
                                                                     <input type="hidden"
                                                                     name="mai_e_{{ $exercise->id }}_s_{{ $i }}"
-                                                                    id="mai_e_{{ $exercise->id }}_s_{{ $i }}">
+                                                                    id="mai_e_{{ $exercise->id }}_s_{{ $i }}" value="0">
                                                                 </tr>
                                                             @endfor
 

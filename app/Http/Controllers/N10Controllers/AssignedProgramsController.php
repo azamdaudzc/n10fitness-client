@@ -46,6 +46,7 @@ class AssignedProgramsController extends Controller
 
     public function view_week($id = 0,$last_id=0)
     {
+
         if($last_id != 0 ){
 
         }
@@ -54,7 +55,10 @@ class AssignedProgramsController extends Controller
         $user_program=UserProgram::where('user_id',Auth::user()->id)->where('program_builder_id',$program_id)->get()->first();
         if($user_program->start_date == null ){
             UserProgram::where('user_id',Auth::user()->id)->where('program_builder_id',$program_id)->update(['start_date' => \Carbon\Carbon::now()->startOfWeek()]);
+            $user_program=UserProgram::where('user_id',Auth::user()->id)->where('program_builder_id',$program_id)->get()->first();
+
         }
+
         $start_date=date('Y-m-d', strtotime($user_program->start_date. ' + '.(($program_week->week_no-1) * 7).' days'));
         $end_date=date('Y-m-d', strtotime($user_program->start_date. ' + '.($program_week->week_no * 7).' days'));
         $current_date='';
