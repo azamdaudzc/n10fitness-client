@@ -170,6 +170,25 @@
         .editable-program-table tr td input{
             width: 50px
         }
+
+        .notification {
+            color: white;
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+            border-radius: 2px;
+        }
+
+
+        .notification .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            padding: 2px 5px;
+            border-radius: 50%;
+            background-color: red;
+            color: white;
+        }
     </style>
 
 </head>
@@ -414,7 +433,11 @@
         }
 
 
+        $(".notification-main-icon").click(function(){
 
+            $.get('{{route('mark.notification.done')}}', function (){
+            });
+        });
 
 
     </script>

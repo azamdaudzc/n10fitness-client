@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\Notification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\UserControllers\UserClientController;
@@ -29,7 +32,7 @@ Route::get('/migratedatabase', function () {
 });
 
 Route::middleware(['auth', 'check_user_type', 'verified'])->group(function () {
-    Route::get('/send-email', [EmailController::class, 'index']);
+    Route::get('/send-email', [JobController::class, 'enqueue']);
     Route::get('/', function () {
         $data['page_heading'] = "Dashboard";
         $data['sub_page_heading'] = "main dashboard";
@@ -65,6 +68,10 @@ Route::middleware(['auth', 'check_user_type', 'verified'])->group(function () {
         Route::post('checkin/questions/store', 'store')->name('checkin.questions.store');
 
     });
+
+    Route::get('mark/notification/done',function (){
+        Notification::where('user_id',Auth::user()->id)->update(['read' => 1]);
+    })->name('mark.notification.done');
 });
 
 

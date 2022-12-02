@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserCheckin;
+use App\Models\UserProgram;
 use App\Models\AthleticType;
 use Illuminate\Http\Request;
 use App\Models\CheckinQuestion;
 use App\Models\UserCheckinAnswer;
+use App\Models\ProgramBuilderWeek;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,25 +62,9 @@ class GetApiDataController extends Controller
             ]);
             $checkin_id=$checkin->id;
         }
-        // foreach ($input as $key => $value) {
-        //     $splitted=explode('-',$key);
-        //     if(!is_array($value) &&  is_file($value)){
-        //         $image = $this->saveCheckInAnswerImage($request,$value);
-        //         $value=$image;
-        //     }
-        //     else{
-        //         $value=json_encode($value);
-        //     }
-        //     UserCheckinAnswer::create([
-        //         'user_checkin_id' => $checkin_id,
-        //         'checkin_question_input_id' => $splitted[0],
-        //         'checkin_question_id' => $id,
-        //         'answer' => $value,
-        //     ]);
-
-        // }
 
         foreach (json_decode($request->answer) as  $value) {
+
 
             UserCheckinAnswer::create([
                         'user_checkin_id' => $checkin_id,
@@ -86,6 +72,7 @@ class GetApiDataController extends Controller
                         'checkin_question_id' => $id,
                         'answer' => $value->questionVal,
                     ]);
+
         }
 
         UserCheckin::where('id',$checkin_id)->update(['last_answered_question' =>  $ques_display_order]);
@@ -101,5 +88,31 @@ class GetApiDataController extends Controller
 
     }
 
+
+    public function uploadImage(Request $request)
+    {
+
+        $file = $request->file('image');
+        $filename=$this->saveCheckInAnswerImage($request,$file);
+        return $filename;
+
+    }
+
+
+    public function getUserPrograms(){
+        $data['programs'] = UserProgram::where('user_id', Auth::user()->id)->with('program', 'program.coach')->get();
+
+    }
+
+    public function getUserProgramWeeks(Request $request){
+        $user_program = UserProgram::where('user_id', Auth::user()->id)
+        ->where('id', $request->id)
+        ->with('program', 'program.coach')->get()->first();
+
+        $program_weeks=ProgramBuilderWeek::where('program_builder_id',$user_program->program_builder_id)->get();
+        $data['program']=$user_program;
+        $data['program_weeks']=$program_weeks;
+        return $data;
+    }
 
 }

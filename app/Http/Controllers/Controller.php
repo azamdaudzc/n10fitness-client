@@ -69,11 +69,12 @@ class Controller extends BaseController
     }
 
 
-    function sendNotification($user_id,$name,$message){
+    function sendNotification($user_id,$name,$message,$url = null ,$type = null){
         Notification::create([
             'user_id' => $user_id,
             'name' => $name,
             'message' => $message,
+            'url' => $url,
         ]);
 
     }

@@ -66,6 +66,11 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            <div>
+                                                                <strong >Peak Exerted Max:</strong>
+                                                                <label id="peak_exerted_max_{{$exercise->id}}">0</label>
+
+                                                            </div>
                                                             @for ($i = 1; $i <= $exercise_sets[$exercise->id]->set_no; $i++)
                                                                 <tr>
                                                                     <td class="w-55px">SET {{ $i }}</td>
@@ -146,6 +151,13 @@
 
                 $('#ma_e_' + exercise_id + "_s_" + set_no).html(max_exerted);
                 $('#mai_e_' + exercise_id + "_s_" + set_no).val(max_exerted);
+
+                let peak = $('#peak_exerted_max_'+exercise_id).html();
+                peak=parseFloat(peak);
+                if(peak<max_exerted){
+                    $('#peak_exerted_max_'+exercise_id).html(max_exerted);
+
+                }
             }
 
 
