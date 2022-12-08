@@ -7,8 +7,11 @@
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-xxl">
+                <div style="display: flex">
+                    <a href="{{$back_url}}"><i class="fa fa-arrow-left fs-1" style="margin-right:5px"></i></a>
+                    <h2>Week : {{ $program_week->week_no }}</h2>
 
-                <h2>Week : {{ $program_week->week_no }}</h2>
+                </div>
                 <p><strong>Assigned Calories :</strong> {{ $program_week->assigned_calories }}</p>
                 <p><strong>Assigned Proteins :</strong> {{ $program_week->assigned_proteins }}</p>
 

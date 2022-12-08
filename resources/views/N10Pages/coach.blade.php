@@ -21,16 +21,24 @@
                                         <!--begin::Wrapper-->
                                         <div class="flex-grow-1 mt-2 me-9 me-md-0">
                                             <!--begin::Title-->
-                                            <div class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5">
-                                                @if ($coach)
-                                                    {{ $coach->coach->first_name }} {{ $coach->coach->last_name }}
-                                                @else
-                                                    Coach Not Assigned Yet
-                                                @endif
+                                            <div class="position-relative text-gray-800 fs-3 z-index-2 fw-bold mb-5">
+                                                Assigned Coach
                                             </div>
                                             <!--end::Title-->
                                             <!--begin::Text-->
-                                            <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block">Assigned Coach</span>
+                                            @if ($coach)
+                                                <div style="display:flex;justify-content:space-between;margin-right:20px" >
+                                                    <span class="text-gray-600 fw-semibold fs-3 mb-6 d-block"><strong>Name : </strong>{{ $coach->coach->first_name }} {{ $coach->coach->last_name }}</span>
+
+                                                    <div class="image-input-wrapper w-125px h-125px"
+                                                    @if ($coach->coach->avatar != null) style="background-image: url('{{ $coach->coach->avatar }}');     border: solid 1px;
+                                                    border-radius: 10px;"@else style="background-image: url('{{ asset('assets/media/svg/files/young-fitness-man-studio.jpg') }}') ;    border: solid 1px;
+                                                    border-radius: 10px;" @endif>
+                                                    </div>
+                                                    @else
+                                                    Coach Not Assigned Yet
+                                                </div>
+                                            @endif
                                             <!--end::Text-->
                                             <!--begin::Action-->
 

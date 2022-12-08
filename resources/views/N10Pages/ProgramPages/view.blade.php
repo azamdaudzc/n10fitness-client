@@ -21,8 +21,10 @@
             <div id="kt_app_content" class="app-content flex-column-fluid">
                 <!--begin::Content container-->
                 <div id="kt_app_content_container" class="app-container container-xxl">
-
-                    <h2>Program Title : {{ $user_program->program->title }}</h2>
+                    <div style="display: flex">
+                        <a href="{{$back_url}}"><i class="fa fa-arrow-left fs-1" style="margin-right:5px"></i></a>
+                        <h2>Program Title : {{ $user_program->program->title }}</h2>
+                    </div>
                     @php
                         $last_week_id=null;
                     @endphp
