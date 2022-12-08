@@ -214,11 +214,13 @@ class GetApiDataController extends Controller
 
 
     function getUserProgramDayInfo (Request $request){
- 
+        
         if (date('Y-m-d') > $request->date) {
-            $this->fillMissedDays($request->day_id);
+            return $this->fillMissedDays($request->day_id, $request->last_id);
         }
-        return $this->get_day_data($request->day_id,$request->last_id);
+        else{
+         return $this->get_day_data($request->day_id,$request->last_id);
+        }
     }
 
   
@@ -307,7 +309,7 @@ class GetApiDataController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function fillMissedDays($id)
+    public function fillMissedDays($id,$last_id)
     {
 
         $program_day = ProgramBuilderWeekDay::where('id', $id)->get()->first();
@@ -338,6 +340,9 @@ class GetApiDataController extends Controller
                 }
             }
         }
+
+        return $this->get_day_data($id, $last_id);
+
     }
     
 }

@@ -36,6 +36,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('get/user/program/weeks',[GetApiDataController::class,'getUserProgramWeeks']);
     Route::post('get/user/program/days',[GetApiDataController::class,'getUserProgramDays']);
     Route::post('get/user/program/day/info', [GetApiDataController::class, 'getUserProgramDayInfo']);
+    Route::post('user/program/day/store', [GetApiDataController::class, 'store_day']);
 
 
 
