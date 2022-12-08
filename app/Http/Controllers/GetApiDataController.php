@@ -180,6 +180,7 @@ class GetApiDataController extends Controller
                     $day_id = $wd->id;
                     $peta[$value->format('Y-M-d')]['day_no']=$day_no;
                     $peta[$value->format('Y-M-d')]['date']=$value->format('Y-M-d');
+                    $peta[$value->format('Y-M-d')]['date_to_send'] = $value->format('Y-m-d');
                     $peta[$value->format('Y-M-d')]['day_title']= $value->format('l');
                     $peta[$value->format('Y-M-d')]['day_id'] = $day_id;
                     if (date('Y-m-d') == $value->format('Y-m-d')){
@@ -201,6 +202,7 @@ class GetApiDataController extends Controller
         if($found==0){
                 $peta[$value->format('Y-M-d')]['four'] = 'Rest Day';
                 $peta[$value->format('Y-M-d')]['date'] = $value->format('Y-M-d');
+                $peta[$value->format('Y-M-d')]['date_to_send'] = $value->format('Y-m-d');
                 $peta[$value->format('Y-M-d')]['day_title'] = $value->format('l');
         }
 
