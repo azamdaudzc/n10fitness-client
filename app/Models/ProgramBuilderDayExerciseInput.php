@@ -38,7 +38,7 @@ class ProgramBuilderDayExerciseInput extends Model
      *
      * @var array
      */
-    protected $fillable = ['day_exercise_id','program_builder_id','set_no','weight','reps','rpe','peak_exterted_max','user_program'];
+    protected $fillable = ['day_exercise_id','program_builder_id','set_no','weight','reps','rpe','peak_exterted_max','user_program', 'highest_peak_exterted_max'];
 
 
     /**

@@ -17,7 +17,10 @@
                             <div class="card shadow-sm ">
                                 <div class="card-header collapsible cursor-pointer rotate" data-bs-toggle="collapse"
                                     data-bs-target="#kt_docs_card_collapsible">
-                                    <h3 class="card-title" >W {{$week}} - Day {{ $program_day->day_no }}</h3>
+                                    <div style="display: flex;align-items: center;">
+                                        <a href="{{$back_url}}"><i class="fa fa-arrow-left fs-1" style="margin-right:5px"></i></a>
+                                        <h3 class="card-title" >W {{$week}} - Day {{ $program_day->day_no }}</h3>
+                                    </div>
                                     <div class="card-toolbar">
 
                                     </div>
@@ -27,7 +30,7 @@
                                     <Strong>Warmups :</Strong> <br>
                                     <ul class="mb-10">
                                         @foreach ($warmups as $w)
-                                            <li>{{ $w->warmupBuilder->name }}</li>
+                                            <li class="warmup-link" data-id="{{$w->warmup_builder_id}}">{{ $w->warmupBuilder->name }}</li>
                                         @endforeach
                                     </ul>
                                     <div class="form-group">
@@ -38,7 +41,8 @@
                                             <div class="mt-10">
                                                 <hr class="solid">
                                                 <div class="mt-5 mb-5 ">
-                                                    <strong>Exercise :</strong> {{ $exercise->exerciseLibrary->name }}
+                                                    <strong>Exercise :</strong><div  class="exercise-link" data-id="{{$exercise->exerciseLibrary->id}}"> {{ $exercise->exerciseLibrary->name }}</div>
+
                                                 </div>
                                                 @if($exercise_sets[$exercise->id]->notes != null)
                                                 <div class="mt-5 mb-5 h-50px">
@@ -107,6 +111,30 @@
             <!--end::Content-->
         </div>
         <!--end::Content wrapper-->
+
+        <div class="modal fade" tabindex="-1" id="info_modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Warmup Info</h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                            <span class="svg-icon svg-icon-1"></span>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body" id="info_modal_body">
+                        <p>Modal body text goes here.</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endsection
 
     @section('page-scripts')
@@ -128,7 +156,30 @@
 
             $(function() {
 
+                $(document).on('click',".warmup-link",function(){
+                    let id = $(this).attr('data-id');
+                    $.post('{{route("program.info.warmup")}}',{
+                        _token: '{{ csrf_token() }}',
+                        id
+                    },function(data){
+                        $('#info_modal_body').html(data);
+                        $('#info_modal').modal('toggle');
 
+                    });
+                });
+
+                $(document).on('click',".exercise-link",function(){
+                    let id = $(this).attr('data-id');
+                    $.post('{{route("program.info.exercise")}}',{
+                        _token: '{{ csrf_token() }}',
+                        id
+                    },function(data){
+                        $('#info_modal_body').html(data);
+                        $('#info_modal').modal('toggle');
+
+                    });
+
+                });
 
 
                 $(document).on("submit", "form", function(event) {

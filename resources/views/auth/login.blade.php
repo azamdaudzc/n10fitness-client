@@ -85,7 +85,7 @@
 								<!--begin::Input group=-->
 								<div class="fv-row mb-8">
 									<!--begin::Email-->
-									<input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent" />
+									<input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent"   value="{{old('email')}}"/>
 									<!--end::Email-->
                                     <ul class='text-sm text-red-600 space-y-1' style="color:red;list-style:none">
                                     @foreach ((array) $errors->get('email') as $message)

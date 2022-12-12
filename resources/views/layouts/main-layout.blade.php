@@ -72,9 +72,7 @@
             border-radius: 21px;
         }
 
-        .table-wth-minh {
-            min-height: 20vh
-        }
+
 
         .image-input-wrapper {
             background-repeat: no-repeat !important;
@@ -87,7 +85,7 @@
         .warmupvideo-container {
             position: relative;
 
-            width: 444px;
+            /* width: 444px; */
             height: 200px;
         }
 
@@ -104,7 +102,7 @@
             position: absolute;
             top: 10px;
             left: 0;
-            width: 444px;
+            width: 100%;
             height: 200px;
             background: rgba(0, 0, 0, 0);
             transition: background 0.5s ease;
@@ -117,7 +115,7 @@
 
         .warmupvideo-button {
             position: absolute;
-            width: 444px;
+            width: 100%;
             left: 0;
             top: 60px;
             text-align: center;
@@ -188,6 +186,18 @@
             border-radius: 50%;
             background-color: red;
             color: white;
+        }
+
+        .exercise-link , .warmup-link {
+            color: blue;
+            text-decoration: underline;
+            list-style: none;
+            cursor: pointer;
+        }
+
+        .table-responsive,
+        .dataTables_scrollBody {
+            overflow: visible !important;
         }
     </style>
 

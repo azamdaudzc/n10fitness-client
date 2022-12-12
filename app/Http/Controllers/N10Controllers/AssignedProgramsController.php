@@ -31,9 +31,9 @@ class AssignedProgramsController extends Controller
         $user_program = UserProgram::where('user_id', Auth::user()->id)
             ->where('id', $id)
             ->with('program', 'program.coach')->get()->first();
-
+        $back_url=route('assigned.programs.index');
         $program_weeks=ProgramBuilderWeek::where('program_builder_id',$user_program->program_builder_id)->get();
-        return view('N10Pages.ProgramPages.view',compact('user_program','program_weeks'));
+        return view('N10Pages.ProgramPages.view',compact('user_program','program_weeks','back_url'));
     }
     public function view_day_prepare(Request $request){
         $date=$request->date;
@@ -47,6 +47,7 @@ class AssignedProgramsController extends Controller
     public function view_week($id = 0,$last_id=0)
     {
 
+
         if($last_id != 0 ){
 
         }
@@ -58,6 +59,7 @@ class AssignedProgramsController extends Controller
             $user_program=UserProgram::where('user_id',Auth::user()->id)->where('program_builder_id',$program_id)->get()->first();
 
         }
+        $back_url=route('assigned.programs.view',$user_program->id);
 
         $start_date=date('Y-m-d', strtotime($user_program->start_date. ' + '.(($program_week->week_no-1) * 7).' days'));
         $end_date=date('Y-m-d', strtotime($user_program->start_date. ' + '.($program_week->week_no * 7).' days'));
@@ -79,11 +81,12 @@ class AssignedProgramsController extends Controller
 
             }
         }
-        return view('N10Pages.ProgramPages.view-week',compact('current_date','saved_current_date','program_week','week_days','start_date','end_date','last_id','ans_exists'));
+        return view('N10Pages.ProgramPages.view-week',compact('current_date','saved_current_date','program_week','week_days','start_date','end_date','last_id','ans_exists','back_url'));
     }
     public function view_day($id = 0,$last_id = 0)
     {
 
+        $back_url=route('assigned.programs.view-week',[$id,$last_id]);
 
         $program_day=ProgramBuilderWeekDay::where('id',$id)->get()->first();
         //last week
@@ -127,9 +130,9 @@ class AssignedProgramsController extends Controller
 
         if($exists){
 
-            return view('N10Pages.ProgramPages.view-completed-day',compact('week','day_id','program_day','warmups','exercises','exercise_sets','answeres','last_exercise_sets'));
+            return view('N10Pages.ProgramPages.view-completed-day',compact('week','day_id','program_day','warmups','exercises','exercise_sets','answeres','last_exercise_sets','back_url'));
         }
-        return view('N10Pages.ProgramPages.view-day',compact('week','day_id','program_day','warmups','exercises','exercise_sets','last_exercise_sets'));
+        return view('N10Pages.ProgramPages.view-day',compact('week','day_id','program_day','warmups','exercises','exercise_sets','last_exercise_sets','back_url'));
     }
 
     public function store_day(Request $request){
@@ -140,6 +143,12 @@ class AssignedProgramsController extends Controller
         $exercises=ProgramBuilderDayExercise::where('builder_week_day_id',$request->day_id)->with('exerciseLibrary')->get();
         foreach ($exercises as $value) {
             $exercise_set=ProgramBuilderDayExerciseSet::where('program_week_days',$value->id)->get()->first();
+            $highest_peak_exterted_max=0;
+            for ($i = 1; $i <= $exercise_set->set_no; $i++) {
+                if($highest_peak_exterted_max< $input['mai_e_' . $value->id . '_s_' . $i]){
+                    $highest_peak_exterted_max= $input['mai_e_' . $value->id . '_s_' . $i];
+                }
+            }
             for ($i=1; $i <= $exercise_set->set_no; $i++) {
                 ProgramBuilderDayExerciseInput::create([
                     'day_exercise_id' => $value->id,
@@ -149,6 +158,7 @@ class AssignedProgramsController extends Controller
                     'weight' => $input['w_e_'.$value->id.'_s_'.$i],
                     'reps' => $input['r_e_'.$value->id.'_s_'.$i],
                     'rpe' => $exercise_set->rpe_no,
+                    'highest_peak_exterted_max' => $highest_peak_exterted_max,
                     'peak_exterted_max' => $input['mai_e_'.$value->id.'_s_'.$i],
 
                 ]);
@@ -185,6 +195,7 @@ class AssignedProgramsController extends Controller
                     'reps' => 0,
                     'rpe' => $set->rpe_no,
                     'peak_exterted_max' => 0,
+                    'highest_peak_exterted_max' => 0,
 
                 ]);
             }

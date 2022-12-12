@@ -10,6 +10,7 @@ use App\Http\Controllers\UserControllers\UserClientController;
 use App\Http\Controllers\UserControllers\UserCheckinController;
 use App\Http\Controllers\N10Controllers\AssignedCoachController;
 use App\Http\Controllers\N10Controllers\AssignedProgramsController;
+use App\Http\Controllers\N10Controllers\ProgramInfoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +67,12 @@ Route::middleware(['auth', 'check_user_type', 'verified'])->group(function () {
     Route::controller(UserCheckinController::class)->group(function () {
         Route::post('checkin/questions/list', 'list')->name('checkin.questions.list');
         Route::post('checkin/questions/store', 'store')->name('checkin.questions.store');
+
+    });
+
+    Route::controller(ProgramInfoController::class)->group(function () {
+        Route::post('program/info/warmup', 'warmupInfo')->name('program.info.warmup');
+        Route::post('program/info/exercise', 'exerciseInfo')->name('program.info.exercise');
 
     });
 

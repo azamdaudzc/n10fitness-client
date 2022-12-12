@@ -32,8 +32,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get/checkin-questions', [GetApiDataController::class, 'getCheckinQuestions']);
     Route::post('/store/checkin-question-ans', [GetApiDataController::class, 'saveCheckinAnswer']);
 
-    Route::get('get/user/programs',[GetApiDataController::class,'getUserPrograms']);
-    Route::post('get/user/program/weeks',[GetApiDataController::class,'getUserProgramWeeks']);
+    // Route::get('get/user/programs',[GetApiDataController::class,'getUserPrograms']);
+    Route::get('get/user/program/weeks',[GetApiDataController::class,'getUserProgramWeeks']);
+    Route::post('get/user/program/days',[GetApiDataController::class,'getUserProgramDays']);
+    Route::post('get/user/program/day/info', [GetApiDataController::class, 'getUserProgramDayInfo']);
+    Route::post('user/program/day/store', [GetApiDataController::class, 'store_day']);
+    Route::post('get/user/program/day/exercisesets', [GetApiDataController::class, 'get_day_exercise_sets']);
+
+    Route::get('get/user/notifications', [GetApiDataController::class, 'user_notifications']);
+    Route::get('mark/read/user/notifications', [GetApiDataController::class, 'mark_read_notifications']);
+    Route::post('get/warmup/info', [GetApiDataController::class, 'get_warmup_info']);
+    Route::post('get/exercise/info', [GetApiDataController::class, 'get_exercise_info']);
+
 
 
 
