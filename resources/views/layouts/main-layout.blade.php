@@ -290,7 +290,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="submit"  class="btn btn-primary me-10" id="question-form-submit-button">
+                    <button type="button" onclick="submitCheckinForm()"  class="btn btn-primary me-10" id="question-form-submit-button">
                         <span class="indicator-label">
                             Save Changes
                         </span>
@@ -376,45 +376,6 @@
                 }
             });
 
-            $( "#checkin_question_form" ).submit(function( event ) {
-                event.preventDefault();
-                $('#question-form-submit-button').attr("data-kt-indicator", "on");
-
-                $.ajax({
-                    url: $(this).attr("action"),
-                    type: $(this).attr("method"),
-
-                    data: new FormData(this),
-                    processData: false,
-                    contentType: false,
-                    success: function(d, status) {
-                        console.log(d);
-                        $('#check_questions_modal').modal("toggle");
-                        if(d.new_data=='available'){
-                        openCheckInModal();
-                        }
-                        else{
-                            toastr.success('Checkin Completed');
-                            $('#open-checkin-button').attr('disabled','disabled');
-                        }
-                        $('#question-form-submit-button').attr("data-kt-indicator", "off");
-
-                    },
-                    error: function(data) {
-                        var response = JSON.parse(data.responseText);
-                        var errorString = '<ul>';
-                        $.each(response.errors, function(key, value) {
-                            errorString += '<li>' + value + '</li>';
-                        });
-                        errorString += '</ul>';
-                        $('.error-area').html('');
-                        toastr.error(errorString);
-                        $('#question-form-submit-button').attr("data-kt-indicator", "off");
-
-                    }
-                });
-
-            });
         });
 
         $('#kt_modal_add_user').on('shown.bs.modal', function(e) {
@@ -449,7 +410,44 @@
             });
         });
 
+        function submitCheckinForm(){
 
+            $('#question-form-submit-button').attr("data-kt-indicator", "on");
+
+            $.ajax({
+                url: $('#checkin_question_form').attr("action"),
+                type: $('#checkin_question_form').attr("method"),
+
+                data: new FormData($('#checkin_question_form')[0]),
+                processData: false,
+                contentType: false,
+                success: function(d, status) {
+                    console.log(d);
+                    $('#check_questions_modal').modal("toggle");
+                    if(d.new_data=='available'){
+                    openCheckInModal();
+                    }
+                    else{
+                        toastr.success('Checkin Completed');
+                        $('#open-checkin-button').attr('disabled','disabled');
+                    }
+                    $('#question-form-submit-button').attr("data-kt-indicator", "off");
+
+                },
+                error: function(data) {
+                    var response = JSON.parse(data.responseText);
+                    var errorString = '<ul>';
+                    $.each(response.errors, function(key, value) {
+                        errorString += '<li>' + value + '</li>';
+                    });
+                    errorString += '</ul>';
+                    $('.error-area').html('');
+                    toastr.error(errorString);
+                    $('#question-form-submit-button').attr("data-kt-indicator", "off");
+
+                }
+            });
+}
     </script>
 @yield('page-scripts')
 </body>

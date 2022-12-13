@@ -79,6 +79,8 @@ Route::middleware(['auth', 'check_user_type', 'verified'])->group(function () {
     Route::get('mark/notification/done',function (){
         Notification::where('user_id',Auth::user()->id)->update(['read' => 1]);
     })->name('mark.notification.done');
+
+    Route::post('save/daily/weight/waist',[AssignedProgramsController::class,'saveDailyWeightWaist'])->name('save.daily.weight.waist');
 });
 
 

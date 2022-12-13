@@ -57,7 +57,17 @@ class AssignedProgramsController extends Controller
         if($user_program->start_date == null ){
             UserProgram::where('user_id',Auth::user()->id)->where('program_builder_id',$program_id)->update(['start_date' => \Carbon\Carbon::now()->startOfWeek()]);
             $user_program=UserProgram::where('user_id',Auth::user()->id)->where('program_builder_id',$program_id)->get()->first();
-
+            $start_date=date('Y-m-d', strtotime($user_program->start_date. ' + '.(($program_week->week_no-1) * 7).' days'));
+            $end_date=date('Y-m-d', strtotime($user_program->start_date. ' + '.($program_week->week_no * 7).' days'));
+            $temp_program_weeks=ProgramBuilderWeek::where('program_builder_id',$program_id)->orderBy('week_no')->get();
+            foreach ($temp_program_weeks as  $value) {
+                $start_date=date('Y-m-d', strtotime($user_program->start_date. ' + '.(($value->week_no-1) * 7).' days'));
+                $end_date=date('Y-m-d', strtotime($user_program->start_date. ' + '.($value->week_no * 7).' days'));
+                ProgramBuilderWeek::where('program_builder_id',$program_id)->where('week_no',$value->week_no)->update([
+                    'start_date' => $start_date,
+                    'end_date' => $end_date,
+                ]);
+            }
         }
         $back_url=route('assigned.programs.view',$user_program->id);
 
@@ -166,7 +176,7 @@ class AssignedProgramsController extends Controller
         }
         $name='Program Day Completed';
         $message=Auth::user()->first_name.' '.Auth::user()->last_name.' finished day'.$program_day->day_no;
-        $this->sendNotification(ProgramBuilder::find($program_id)->created_by,$name,$message);
+        $this->sendNotification(ProgramBuilder::find($program_id)->created_by,$name,$message,null,'ProgramDayCompleted');
         return response()->json(['success' => true]);
     }
 
@@ -202,5 +212,16 @@ class AssignedProgramsController extends Controller
             }
         }
 
+    }
+
+    public function saveDailyWeightWaist(Request $request){
+        $day_id=$request->day_id;
+        //daily_weight
+        //daily_waist
+        $day=ProgramBuilderWeekDay::find($day_id);
+        $day->client_weight=$request->daily_weight;
+        $day->client_waist=$request->daily_waist;
+        $day->save();
+        return response()->json(['success' => true , 'url' => $request->url]);
     }
 }

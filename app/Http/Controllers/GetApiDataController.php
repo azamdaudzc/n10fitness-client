@@ -6,6 +6,7 @@ use DateTime;
 use DatePeriod;
 use DateInterval;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\UserCheckin;
 use App\Models\UserProgram;
 use App\Models\WarmupVideo;
@@ -20,13 +21,14 @@ use App\Models\UserCheckinAnswer;
 use App\Models\ProgramBuilderWeek;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\ExerciseLibraryMuscle;
 use App\Models\ProgramBuilderWeekDay;
 use App\Models\ProgramBuilderDayWarmup;
 use App\Models\ProgramBuilderDayExercise;
 use App\Models\ProgramBuilderDayExerciseSet;
 use App\Models\ProgramBuilderDayExerciseInput;
-
+use Validator;
 class GetApiDataController extends Controller
 {
     //
@@ -114,7 +116,7 @@ class GetApiDataController extends Controller
     }
 
 
-  
+
     public function getUserProgramWeeks(Request $request){
         $user_program = UserProgram::where('user_id', Auth::user()->id)->with('program', 'program.coach')->get()->first();
         if($user_program){
@@ -202,7 +204,7 @@ class GetApiDataController extends Controller
 
                      }
             }
-            
+
         }
         if($found==0){
 
@@ -216,7 +218,7 @@ class GetApiDataController extends Controller
 
         }
         array_push($calculated_days, $peta[$value->format('Y-M-d')]);
-       
+
         }
         $data['calculated_days']= $calculated_days;
         return $data;
@@ -226,7 +228,7 @@ class GetApiDataController extends Controller
 
 
     function getUserProgramDayInfo (Request $request){
-        
+
         if (date('Y-m-d') > $request->date) {
             return $this->fillMissedDays($request->day_id, $request->last_id);
         }
@@ -269,7 +271,7 @@ class GetApiDataController extends Controller
             ->where('program_builder_id', $week_obj->program_builder_id)
             ->where('user_program', $user_program_id)->exists();
         $answeres = null;
-        
+
             $exercise_sets = ProgramBuilderDayExerciseSet::where('program_week_days', $exercises->id)->get()->first();
             $answeres_temp = ProgramBuilderDayExerciseInput::where('day_exercise_id', $exercises->id)
                 ->where('program_builder_id', $week_obj->program_builder_id)
@@ -277,7 +279,7 @@ class GetApiDataController extends Controller
             foreach ($answeres_temp as $ans) {
                 $answeres[$ans->set_no] = $ans;
             }
-        
+
 
         $data['week'] = $week;
         $data['day_id'] = $day_id;
@@ -297,7 +299,7 @@ class GetApiDataController extends Controller
 
         $program_day = ProgramBuilderWeekDay::where('id', $id)->get()->first();
         //last week
-        
+
         //last week
         $week_obj = ProgramBuilderWeek::find($program_day->program_builder_week_id);
         $week = $week_obj->week_no;
@@ -308,14 +310,14 @@ class GetApiDataController extends Controller
         $exists = ProgramBuilderDayExerciseInput::where('day_exercise_id', $exercises->first()->id)
         ->where('program_builder_id', $week_obj->program_builder_id)
         ->where('user_program', $user_program_id)->exists();
-       
+
 
         $data['week']= $week;
         $data['day_id']= $day_id;
         $data['program_day']= $program_day;
         $data['warmups']= $warmups;
         $data['exercises']= $exercises;
- 
+
           return $data;
     }
 
@@ -344,7 +346,7 @@ class GetApiDataController extends Controller
         }
         $name = 'Program Day Completed';
         $message = Auth::user()->first_name . ' ' . Auth::user()->last_name . ' finished day' . $program_day->day_no;
-        $this->sendNotification(ProgramBuilder::find($program_id)->created_by, $name, $message);
+        $this->sendNotification(ProgramBuilder::find($program_id)->created_by, $name, $message,null,'ProgramDayCompleted');
         return response()->json(['success' => true]);
     }
 
@@ -410,5 +412,72 @@ class GetApiDataController extends Controller
 
         return $data;
     }
-    
+
+    function get_all_exercise_libraries(){
+        return ExerciseLibrary::where('approved_by','>',0)->with('exerciseMovementPattern','exerciseEquipment','exerciseCategory')->get();
+    }
+
+    public function update_profile(Request $request)
+    {
+
+        if(!Auth::user()){
+            return response()->json(['user' => 'Not Authorized']);
+        }
+        $validator = Validator::make($request->all(), [
+            'id' =>'exists:users,id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'email|required|unique:users,email,'.Auth::user()->id,
+        ]);
+
+
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+            $user = User::find(Auth::user()->id);
+            if ($request->password != null) {
+                $password = Hash::make($request->password);
+                if ($request->hasFile('avatar')) {
+                    $newavatar = $this->updateprofile($request, 'avatar');
+                    unset($request['avatar']);
+                    $user->update(array_merge($request->all(), ['password' => $password, 'avatar' => $newavatar]));
+                } else if ($request->avatar_remove == 1) {
+                    $user->update(array_merge($request->all(), ['password' => $password, 'avatar' => null]));
+                } else {
+                    $user->update(array_merge($request->all(), ['password' => $password]));
+                }
+            } else {
+                unset($request['password']);
+                if ($request->hasFile('avatar')) {
+                    $newavatar = $this->updateprofile($request, 'avatar');
+                    unset($request['avatar']);
+                    $user->update(array_merge($request->all(), ['avatar' => $newavatar]));
+                } else if ($request->avatar_remove == 1) {
+                    $user->update(array_merge($request->all(), ['avatar' => null]));
+                } else {
+                    $user->update(array_merge($request->all()));
+                }
+            }
+
+            return response()->json(['success' => true, 'msg' => 'User Edit Complete', 'user' => User::find(Auth::user()->id)]);
+
+
+    }
+    public function sendError($error, $errorMessages = [], $code = 200)
+    {
+    	$response = [
+            'success' => false,
+            'message' => $error,
+        ];
+
+
+        if(!empty($errorMessages)){
+            $response['data'] = $errorMessages;
+        }
+
+
+        return response()->json($response, $code);
+    }
+
 }

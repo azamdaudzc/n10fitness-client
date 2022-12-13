@@ -56,6 +56,7 @@ class UserCheckinController extends Controller
         unset($request['question_id']);
         unset($request['_token']);
         $input=$request->all();
+
         if(UserCheckin::where('user_id',Auth::user()->id)->where('is_completed',null)->exists()){
             $checkin_id=UserCheckin::where('user_id',Auth::user()->id)->where('is_completed',null)->get()->first()->id;
         }
