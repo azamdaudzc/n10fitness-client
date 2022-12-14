@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('get/all/exercise/libraries', [GetApiDataController::class, 'get_all_exercise_libraries']);
 
     Route::post('update/client/profile', [GetApiDataController::class, 'update_profile']);
+    Route::get('fetch/dashboard', [GetApiDataController::class, 'dashboard']);
 
     Route::post('/auth/logout', [RegisterController::class, 'logout']);
 

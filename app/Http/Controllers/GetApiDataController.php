@@ -480,4 +480,20 @@ class GetApiDataController extends Controller
         return response()->json($response, $code);
     }
 
+    public function dashboard(){
+        $user_program=UserProgram::where('user_id',Auth::user()->id)->with('user','program')->get()->first();
+        $data['user_program']=$user_program;
+        $id=$user_program->program_builder_id;
+        $data['program'] = ProgramBuilder::find($id);
+        $weeks = ProgramBuilderWeek::where('program_builder_id',$id)
+        ->where('start_date','<',date('Y-m-d'))->where('end_date','>',date('Y-m-d'))
+        ->get()->first();
+        $data['weeks']=$weeks;
+        $week_day=ProgramBuilderWeekDay::where('program_builder_week_id', $weeks->id)->get();
+        $data['week_day']=$week_day;
+
+        return $data;
+
+    }
+
 }

@@ -106,7 +106,7 @@
                     <input type="hidden" id="daily_inputs_day_url" name="url">
                         <div>
                             <label for="">Enter Weight In KG</label>
-                            <input class="form-control" type="text" name="daily_weight" id="">
+                            <input class="form-control" type="number" name="daily_weight" id="">
                         </div>
 
                         <div>

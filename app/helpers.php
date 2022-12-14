@@ -52,10 +52,10 @@ function notificationWhereToGo($type){
             $url=route('exercise.library.index').'?goto=3';
             break;
         case 'ProgramApproved':
-            $url=route('program.builder.index').'?goto=1';
+            $url=route('assigned.programs.index').'?goto=1';
             break;
         case 'ProgramRejected':
-            $url=route('program.builder.index').'?goto=3';
+            $url=route('assigned.programs.index').'?goto=3';
             break;
         case 'WarmupApproved':
             $url=route('warmup.builder.index').'?goto=1';
@@ -64,31 +64,31 @@ function notificationWhereToGo($type){
             $url=route('warmup.builder.index').'?goto=3';
             break;
         case 'CoachClientAssigned':
-            $url=route('user.coach.index');
+            $url=route('assigned.coach.index');
             break;
         case 'CoachClientRemoved':
-            $url=route('user.coach.index');
+            $url=route('assigned.coach.index');
             break;
         case 'ProgramDayCompleted':
-            $url=route('program.builder.index');
+            $url=route('assigned.programs.index');
             break;
         case 'ExerciseLibraryCreated':
             $url=route('exercise.library.index').'?goto=2';
             break;
         case 'ProgramAssigned':
-            $url=route('program.builder.index');
+            $url=route('assigned.programs.index');
             break;
         case 'ProgramRemoved':
-            $url=route('program.builder.index');
+            $url=route('assigned.programs.index');
             break;
         case 'ProgramCreated':
-            $url=route('program.builder.index');
+            $url=route('assigned.programs.index');
             break;
         case 'ProgramShared':
-            $url=route('program.builder.index');
+            $url=route('assigned.programs.index');
             break;
         case 'ProgramShareRemoved':
-            $url=route('program.builder.index');
+            $url=route('assigned.programs.index');
             break;
         case 'WarmupCreated':
             $url=route('warmup.builder.index').'?goto=2';

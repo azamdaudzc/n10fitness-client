@@ -35,7 +35,22 @@
                                     <Strong>Warmups :</Strong> <br>
                                     <ul class="mb-10">
                                         @foreach ($warmups as $w)
-                                            <li class="warmup-link" data-id="{{$w->warmup_builder_id}}">{{ $w->warmupBuilder->name }}</li>
+
+                                          <li>  <div class="card">
+                                                <div class="d-flex justify-between">
+                                                    @if ($w->warmupBuilder->avatar != null)
+                                                    <img src="{{  $w->warmupBuilder->avatar }}" alt="image" />
+                                                @else
+                                                    <img src="{{ asset('assets/media/avatars/blank.png') }}" alt="image" />
+                                                @endif
+                                                </div>
+                                                <div>
+                                                    {{ $w->warmupBuilder->name }} <br>
+                                                    {{ $w->warmupBuilder->description }}
+                                                    <label for="" class="warmup-link" data-id="{{$w->warmup_builder_id}}" class="text-light-daner">Learn More -></label>
+                                                </div>
+                                            </div>
+                                        </li>
                                         @endforeach
                                     </ul>
                                     <div class="form-group">
