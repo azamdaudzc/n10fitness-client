@@ -136,10 +136,10 @@
                     <span>Your Goal</span>
                 </div>
                 <div class="w-100 bg-light-primary rounded mb-2" style="height: 24px">
-                    <div class="bg-primary rounded" role="progressbar" style="height: 24px; width: 37%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="bg-primary rounded" role="progressbar" style="height: 24px; width: {{getProgramCompletedPercentage()}}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div class="fw-semibold fs-7 text-primary w-100 mt-auto">
-                    <span>reached 37% of your target</span>
+                    <span>reached {{getProgramCompletedPercentage()}}% of your target</span>
                 </div>
             </div>
              <!--end::Progress-->

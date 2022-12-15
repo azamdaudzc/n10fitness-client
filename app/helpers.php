@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\UserCheckin;
-use App\Models\CheckinQuestion;
+use App\Models\UserProgram;
 use App\Models\Notification;
+use App\Models\CheckinQuestion;
+use App\Models\ProgramBuilderWeek;
 use Illuminate\Support\Facades\Auth;
 
 function checkinQuestionAvailability()
@@ -40,6 +42,17 @@ function getNotificationCount(){
     return Notification::where('user_id',Auth::user()->id)->where('read',0)->count('id');
 }
 
+function getProgramCompletedPercentage(){
+    $program=UserProgram::where('user_id',Auth::user()->id)->first()->program_builder_id;
+    $total=ProgramBuilderWeek::where('program_builder_id',$program)->count('id');
+    $done=ProgramBuilderWeek::where('program_builder_id',$program)->where('is_completed',1)->count('id');
+    if($total>0 && $done >0){
+        return round(($done/$total)*100);
+    }
+    else{
+        return 0;
+    }
+}
 
 
 function notificationWhereToGo($type){

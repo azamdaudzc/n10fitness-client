@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -34,16 +35,8 @@ Route::get('/migratedatabase', function () {
 
 Route::middleware(['auth', 'check_user_type', 'verified'])->group(function () {
     Route::get('/send-email', [JobController::class, 'enqueue']);
-    Route::get('/', function () {
-        $data['page_heading'] = "Dashboard";
-        $data['sub_page_heading'] = "main dashboard";
-        return view('dashboard')->with($data);
-    });
-    Route::get('/dashboard', function () {
-        $data['page_heading'] = "Dashboard";
-        $data['sub_page_heading'] = "main dashboard";
-        return view('dashboard')->with($data);
-    })->name('dashboard');
+    Route::get('/', [DashboardController::class,'index']);
+    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
 
     Route::controller(AssignedCoachController::class)->group(function () {
         Route::get('assigned/coach/index', 'index')->name('assigned.coach.index');
