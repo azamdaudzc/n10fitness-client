@@ -177,6 +177,7 @@ class AssignedProgramsController extends Controller
         $name='Program Day Completed';
         $message=Auth::user()->first_name.' '.Auth::user()->last_name.' finished day'.$program_day->day_no;
         $this->sendNotification(ProgramBuilder::find($program_id)->created_by,$name,$message,null,'ProgramDayCompleted');
+        $this->clientExerciseCompleted($request->day_id);
         return response()->json(['success' => true]);
     }
 

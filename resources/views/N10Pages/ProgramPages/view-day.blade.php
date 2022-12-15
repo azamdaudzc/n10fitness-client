@@ -33,24 +33,25 @@
                                 <div class="card-body">
 
                                     <Strong>Warmups :</Strong> <br>
-                                    <ul class="mb-10">
+                                    <ul class="mb-10" style="list-style: none">
                                         @foreach ($warmups as $w)
 
-                                          <li>  <div class="card">
-                                                <div class="d-flex justify-between">
-                                                    @if ($w->warmupBuilder->avatar != null)
-                                                    <img src="{{  $w->warmupBuilder->avatar }}" alt="image" />
-                                                @else
-                                                    <img src="{{ asset('assets/media/avatars/blank.png') }}" alt="image" />
-                                                @endif
-                                                </div>
-                                                <div>
-                                                    {{ $w->warmupBuilder->name }} <br>
-                                                    {{ $w->warmupBuilder->description }}
-                                                    <label for="" class="warmup-link" data-id="{{$w->warmup_builder_id}}" class="text-light-daner">Learn More -></label>
-                                                </div>
+                                        <li>
+                                            <div class="border d-flex mt-4 p-2 shadow w-25" style="border-radius: 10px">
+                                                @if ($w->warmupBuilder->avatar != null)
+                                                <img src="{{  $w->warmupBuilder->avatar }}" alt="image" style="height: 100px;width:100px"/>
+                                            @else
+                                                <img src="{{ asset('assets/media/avatars/blank.png') }}" alt="image" style="height: 100px;width:100px"/>
+                                            @endif
+
+                                            <div style="padding-left: 10px">
+                                                <label for="" class="text-danger"><strong>{{ $w->warmupBuilder->name }}</strong></label> <br>
+                                                {{ $w->warmupBuilder->description }}<br>
+                                                <label for="" class="warmup-link" data-id="{{$w->warmup_builder_id}}" class="text-danger">Learn More -></label>
                                             </div>
-                                        </li>
+                                        </div>
+
+                                    </li>
                                         @endforeach
                                     </ul>
                                     <div class="form-group">
@@ -61,7 +62,20 @@
                                             <div class="mt-10">
                                                 <hr class="solid">
                                                 <div class="mt-5 mb-5  ">
-                                                    <strong>Exercise :</strong><div  class="exercise-link" data-id="{{$exercise->exerciseLibrary->id}}"> {{ $exercise->exerciseLibrary->name }}</div>
+                                                    <strong>Exercise :</strong>
+                                                    <div class="border d-flex mt-4 p-2 shadow w-25" style="border-radius: 10px">
+                                                        @if ($exercise->exerciseLibrary->avatar != null)
+                                                        <img src="{{  $exercise->exerciseLibrary->avatar }}" alt="image" style="height: 100px;width:100px"/>
+                                                    @else
+                                                        <img src="{{ asset('assets/media/avatars/blank.png') }}" alt="image" style="height: 100px;width:100px"/>
+                                                    @endif
+
+                                                    <div style="padding-left: 10px">
+                                                        <label for="" class="text-danger"><strong>{{ $exercise->exerciseLibrary->name }}</strong></label> <br>
+                                                        {{ $exercise->exerciseLibrary->description }}<br>
+                                                        <label for="" class="exercise-link" data-id="{{$exercise->exerciseLibrary->id}}" class="text-danger">Learn More -></label>
+                                                    </div>
+                                                </div>
                                                 </div>
                                                 @if($exercise_sets[$exercise->id]->notes != null)
                                                 <div class="mt-5 mb-5 h-50px">

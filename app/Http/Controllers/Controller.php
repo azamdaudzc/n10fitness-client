@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Jobs\SendEmail;
+use App\Models\UserProgram;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Models\ProgramBuilderWeek;
+use Illuminate\Support\Facades\Auth;
+use App\Models\ProgramBuilderWeekDay;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -144,6 +148,21 @@ class Controller extends BaseController
        ];
         SendEmail::dispatch($details);
 
+    }
+
+
+    function clientExerciseCompleted($day_id){
+        $program_day=ProgramBuilderWeekDay::where('id',$day_id)->get()->first();
+        ProgramBuilderWeekDay::where('id',$day_id)->update(['is_completed' => 1]);
+        $max_day_id=ProgramBuilderWeekDay::where('program_builder_week_id',$program_day->program_builder_week_id)->max('id');
+        if($max_day_id==$day_id){
+            ProgramBuilderWeek::where('id',$program_day->program_builder_week_id)->update(['is_completed' => 1]);
+        }
+        $program_id=ProgramBuilderWeek::where('id',$program_day->program_builder_week_id)->first()->program_builder_id;
+        $max_week_id=ProgramBuilderWeek::where('program_builder_id',$program_id)->max('id');
+        if($max_week_id==$program_day->program_builder_week_id){
+            UserProgram::where('program_builder_id',$program_id)->where('user_id',Auth::user()->id)->update(['is_completed' => 1]);
+        }
     }
 
 }

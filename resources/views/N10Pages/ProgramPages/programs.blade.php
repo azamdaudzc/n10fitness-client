@@ -22,7 +22,11 @@
                                       <p class="card-text">{{ $program->program->weeks }} Weeks | {{ $program->program->days }} Days
                                     <br>
                                 Coach : {{ $program->program->coach->first_name }}
+
+
                                 {{ $program->program->coach->last_name }}</p>
+                                <br>
+                                @if($program->is_completed == 1) <label for="" class="text-success">Completed</label>@endif
                                       <a href="{{ route('assigned.programs.view', $program->id) }}" class="btn btn-light-twitter w-100">View Program</a>
                                     </div>
                                   </div>

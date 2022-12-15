@@ -24,6 +24,8 @@
                     <div style="display: flex">
                         <a href="{{$back_url}}"><i class="fa fa-arrow-left fs-1" style="margin-right:5px"></i></a>
                         <h2>Program Title : {{ $user_program->program->title }}</h2>
+                        @if($user_program->is_completed == 1) <label for="" style="margin-left: 10px">( Program Completed )</label>@endif
+
                     </div>
                     @php
                         $last_week_id=null;
