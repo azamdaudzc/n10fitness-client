@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('update/client/profile', [GetApiDataController::class, 'update_profile']);
     Route::get('fetch/dashboard', [GetApiDataController::class, 'dashboard']);
+    Route::post('upload-file', [GetApiDataController::class, 'uploadImage']);
 
     Route::post('/auth/logout', [RegisterController::class, 'logout']);
 
