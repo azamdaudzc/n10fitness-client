@@ -37,7 +37,7 @@
                                         @foreach ($warmups as $w)
 
                                         <li>
-                                            <div class="border d-flex mt-4 p-2 shadow w-25" style="border-radius: 10px">
+                                            <div class="border d-flex mt-4 p-2 shadow w-26" style="border-radius: 10px">
                                                 @if ($w->warmupBuilder->avatar != null)
                                                 <img src="{{  $w->warmupBuilder->avatar }}" alt="image" style="height: 100px;width:100px"/>
                                             @else
@@ -63,7 +63,7 @@
                                                 <hr class="solid">
                                                 <div class="mt-5 mb-5  ">
                                                     <strong>Exercise :</strong>
-                                                    <div class="border d-flex mt-4 p-2 shadow w-25" style="border-radius: 10px">
+                                                    <div class="border d-flex mt-4 p-2 shadow w-26" style="border-radius: 10px">
                                                         @if ($exercise->exerciseLibrary->avatar != null)
                                                         <img src="{{  $exercise->exerciseLibrary->avatar }}" alt="image" style="height: 100px;width:100px"/>
                                                     @else
