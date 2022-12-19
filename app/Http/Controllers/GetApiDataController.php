@@ -481,16 +481,24 @@ class GetApiDataController extends Controller
     }
 
     public function dashboard(){
+        if(Auth::user() == null){
+            return response()->json(['error' => 'not authorized']);
+        }
+
         $user_program=UserProgram::where('user_id',Auth::user()->id)->with('user','program')->get()->first();
+
+        if($user_program==null){return response()->json(['error' => 'no program assigned']);}
         $data['user_program']=$user_program;
         $id=$user_program->program_builder_id;
         $data['program'] = ProgramBuilder::find($id);
         $weeks = ProgramBuilderWeek::where('program_builder_id',$id)
-        ->where('start_date','<',date('Y-m-d'))->where('end_date','>',date('Y-m-d'))
+        ->where('start_date','<=',date('Y-m-d'))->where('end_date','>',date('Y-m-d'))
         ->get()->first();
+        if($weeks != null){
         $data['weeks']=$weeks;
         $week_day=ProgramBuilderWeekDay::where('program_builder_week_id', $weeks->id)->get();
         $data['week_day']=$week_day;
+        }
 
         return $data;
 

@@ -146,7 +146,7 @@ class Controller extends BaseController
            'user_name' => $user->first_name.' '.$user->last_name,
 
        ];
-        SendEmail::dispatch($details);
+        //SendEmail::dispatch($details);
 
     }
 

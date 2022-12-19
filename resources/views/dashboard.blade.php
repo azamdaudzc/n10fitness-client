@@ -44,6 +44,7 @@
                         <!--end::Col-->
                     </div>
                     <!--end::Row-->
+                    @if($program!=null)
                     <div class="card mb-6">
                         <div class="card-body pt-9 pb-0">
                             <!--begin::Details-->
@@ -203,6 +204,7 @@
 
                         </div>
                     </div>
+                    @endif
 
                 </div>
                 <!--end::Content container-->

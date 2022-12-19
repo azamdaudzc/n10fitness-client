@@ -43,7 +43,9 @@ function getNotificationCount(){
 }
 
 function getProgramCompletedPercentage(){
-    $program=UserProgram::where('user_id',Auth::user()->id)->first()->program_builder_id;
+    $temp=UserProgram::where('user_id',Auth::user()->id)->first();
+    if($temp==null) return null;
+    $program=$temp->program_builder_id;
     $total=ProgramBuilderWeek::where('program_builder_id',$program)->count('id');
     $done=ProgramBuilderWeek::where('program_builder_id',$program)->where('is_completed',1)->count('id');
     if($total>0 && $done >0){
