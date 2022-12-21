@@ -104,8 +104,8 @@
                                                                     <td>{{$answeres[$exercise->id][$i]->weight}}</td>
                                                                     <td>{{$answeres[$exercise->id][$i]->reps}}</td>
                                                                     <td>{{$answeres[$exercise->id][$i]->rpe}}</td>
-                                                                    @if($last_exercise_sets!=null && isset($last_exercise_sets[$exercise->exercise_library_id]->weight))
-                                                                    <td class="w-55px">{{ $last_exercise_sets[$exercise->exercise_library_id]->weight}}X{{ $last_exercise_sets[$exercise->exercise_library_id]->reps}} R {{ $last_exercise_sets[$exercise->exercise_library_id]->rpe}}</td>
+                                                                    @if($last_exercise_sets!=null && isset($last_exercise_sets[$exercise->exercise_library_id][$i]->weight))
+                                                                    <td class="w-55px">{{ $last_exercise_sets[$exercise->exercise_library_id][$i]->weight}}X{{ $last_exercise_sets[$exercise->exercise_library_id][$i]->reps}} R {{ $last_exercise_sets[$exercise->exercise_library_id][$i]->rpe}}</td>
                                                                     @else
                                                                     <td class="w-55px">N/A</td>
                                                                     @endif

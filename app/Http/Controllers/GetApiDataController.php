@@ -240,31 +240,42 @@ class GetApiDataController extends Controller
   public function get_day_exercise_sets(Request $request){
 
         $id=$request->day_id;
-        $last_id = $request->last_id;
+        $user_program = UserProgram::where('user_id', Auth::user()->id)->where('is_completed', null)->get()->first();
         $exercise_id=$request->exercise_id;
         $program_day = ProgramBuilderWeekDay::where('id', $id)->get()->first();
+        $exercises = ProgramBuilderDayExercise::where('builder_week_day_id', $id)->where('id', '=', $exercise_id)->with('exerciseLibrary.exerciseCategory')->get()->first();
+        $exercise_library_id=$exercises->exercise_library_id;
+
         //last week
-        if ($last_id > 0) {
-            $day_no = $program_day->day_no;
-            $last_week_id = $last_id;
-            $last_week_obj = ProgramBuilderWeek::find($last_week_id);
-            $last_day = ProgramBuilderWeekDay::where('program_builder_week_id', $last_week_obj->id)->get()->first();
-            $last_exercises = ProgramBuilderDayExercise::where('builder_week_day_id', $last_day->id)->with('exerciseLibrary.exerciseCategory')->get();
-            $user_program_id = UserProgram::where('user_id', Auth::user()->id)->where('program_builder_id', $last_week_obj->program_builder_id)->get()->first()->id;
-            foreach ($last_exercises as $value) {
-                $last_exercise_sets[$value->exercise_library_id] = ProgramBuilderDayExerciseSet::where('program_week_days', $value->id)->get()->first();
-                $last_exercise_sets[$value->exercise_library_id] = ProgramBuilderDayExerciseInput::where('day_exercise_id', $value->id)
-                    ->where('program_builder_id', $last_week_obj->program_builder_id)
-                    ->where('user_program', $user_program_id)->get()->first();
+        $last_exercise_sets = [];
+        $day_no = $program_day->day_no;
+
+        $last_weeks= ProgramBuilderWeek::where('program_builder_id',$user_program->program_builder_id)->get();
+
+        foreach ($last_weeks as  $value) {
+            $last_day = ProgramBuilderWeekDay::where('program_builder_week_id', $value->id)->where('day_no',$day_no)->get()->first();
+
+            $last_exercises = ProgramBuilderDayExercise::where('builder_week_day_id', $last_day->id)->where('exercise_library_id',$exercise_library_id)->get()->first();
+            if($last_exercises){
+            $last_exercise_values = ProgramBuilderDayExerciseSet::where('program_week_days', $last_exercises->id)->get()->first();
+
+            $temp_data = ProgramBuilderDayExerciseInput::where('day_exercise_id', $last_exercises->id)
+                ->where('program_builder_id', $value->program_builder_id)
+                ->where('user_program', $user_program->id)->get();
+
+            foreach ($temp_data as $peka) {
+                $last_exercise_sets[]=$peka;
             }
-        } else {
-            $last_exercise_sets = null;
+            }
+
         }
+
+
+
         //last week
         $week_obj = ProgramBuilderWeek::find($program_day->program_builder_week_id);
         $week = $week_obj->week_no;
         $warmups = ProgramBuilderDayWarmup::where('program_builder_week_day_id', $id)->with('warmupBuilder')->get();
-        $exercises = ProgramBuilderDayExercise::where('builder_week_day_id', $id)->where('id', '=', $exercise_id)->with('exerciseLibrary.exerciseCategory')->get()->first();
         $day_id = $id;
         $user_program_id = UserProgram::where('user_id', Auth::user()->id)->where('program_builder_id', $week_obj->program_builder_id)->get()->first()->id;
         $exists = ProgramBuilderDayExerciseInput::where('day_exercise_id', $exercises->first()->id)
@@ -323,27 +334,45 @@ class GetApiDataController extends Controller
 
     public function store_day(Request $request)
     {
-        $input = $request->all();
+        $exercise_id=0;
+       for ($i=0; $i <  sizeOf($request->values); $i++) {
+            $delta=$request->values[$i];
+            $peta= json_encode($delta);
+            $petra = json_decode($peta);
+            $exercise_id=$petra->exerciseId;
+            break;
+       }
+
+
         $program_day = ProgramBuilderWeekDay::where('id', $request->day_id)->get()->first();
         $program_id = ProgramBuilderWeek::where('id', $program_day->program_builder_week_id)->first()->program_builder_id;
         $user_program_id = UserProgram::where('user_id', Auth::user()->id)->where('program_builder_id', $program_id)->get()->first()->id;
         $exercises = ProgramBuilderDayExercise::where('builder_week_day_id', $request->day_id)->with('exerciseLibrary.exerciseCategory')->get();
-        foreach ($exercises as $value) {
-            $exercise_set = ProgramBuilderDayExerciseSet::where('program_week_days', $value->id)->get()->first();
-            for ($i = 1; $i <= $exercise_set->set_no; $i++) {
-                ProgramBuilderDayExerciseInput::create([
-                    'day_exercise_id' => $value->id,
-                    'program_builder_id' => $program_id,
-                    'user_program' => $user_program_id,
-                    'set_no' => $i,
-                    'weight' => $input['w_e_' . $value->id . '_s_' . $i],
-                    'reps' => $input['r_e_' . $value->id . '_s_' . $i],
-                    'rpe' => $exercise_set->rpe_no,
-                    'peak_exterted_max' => $input['mai_e_' . $value->id . '_s_' . $i],
 
-                ]);
-            }
-        }
+            // $exercise_set = ProgramBuilderDayExerciseSet::where('program_week_days', $exercise_id)->get()->first();
+            //for ($i = 1; $i <= $exercise_set->set_no; $i++) {
+
+
+        for ($i=0; $i <  sizeOf($request->values); $i++) {
+            $delta=$request->values[$i];
+            $peta= json_encode($delta);
+            $petra = json_decode($peta);
+
+            ProgramBuilderDayExerciseInput::create([
+                'day_exercise_id' => $petra->exerciseId,
+                'program_builder_id' => $program_id,
+                'user_program' => $user_program_id,
+                'set_no' =>$petra->setNo,
+                'weight' =>$petra->weight,
+                'reps' => $petra->reps,
+                'rpe' => $petra->rpes,
+                'peak_exterted_max' => $petra->peak,
+
+            ]);
+
+
+       }
+
         $name = 'Program Day Completed';
         $message = Auth::user()->first_name . ' ' . Auth::user()->last_name . ' finished day' . $program_day->day_no;
         $this->sendNotification(ProgramBuilder::find($program_id)->created_by, $name, $message,null,'ProgramDayCompleted');

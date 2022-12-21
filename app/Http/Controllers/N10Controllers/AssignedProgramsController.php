@@ -108,15 +108,19 @@ class AssignedProgramsController extends Controller
         $last_exercises=ProgramBuilderDayExercise::where('builder_week_day_id',$last_day->id)->with('exerciseLibrary')->get();
         $user_program_id=UserProgram::where('user_id',Auth::user()->id)->where('program_builder_id',$last_week_obj->program_builder_id)->get()->first()->id;
         foreach ($last_exercises as $value) {
-            $last_exercise_sets[$value->exercise_library_id]=ProgramBuilderDayExerciseSet::where('program_week_days',$value->id)->get()->first();
-            $last_exercise_sets[$value->exercise_library_id]=ProgramBuilderDayExerciseInput::where('day_exercise_id',$value->id)
+            // $last_exercise_sets[$value->exercise_library_id]=ProgramBuilderDayExerciseSet::where('program_week_days',$value->id)->get()->first();
+            $petracide=ProgramBuilderDayExerciseInput::where('day_exercise_id',$value->id)
             ->where('program_builder_id',$last_week_obj->program_builder_id)
-            ->where('user_program',$user_program_id)->get()->first();
+            ->where('user_program',$user_program_id)->get();
+            foreach ($petracide as $petra) {
+                $last_exercise_sets[$value->exercise_library_id][$petra->set_no]=$petra;
+            }
         }
         }
         else{
             $last_exercise_sets=null;
         }
+
         //last week
         $week_obj=ProgramBuilderWeek::find($program_day->program_builder_week_id);
         $week = $week_obj->week_no;
