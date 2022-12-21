@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 function checkinQuestionAvailability()
 {
+    $check_program=UserProgram::where('user_id')->where('is_completed','=',null)->first();
+    if(!$check_program){
+        return false;
+    }
     $check_in = UserCheckin::where('user_id', Auth::user()->id)->latest('checkin_time')->first();
 
     if ($check_in && $check_in->checkin_time <= now()->subDays(7)->setTime(0, 0, 0)->toDateTimeString()) {

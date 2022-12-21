@@ -38,6 +38,10 @@ class GetApiDataController extends Controller
 
     }
     public function getCheckinQuestions(){
+        $check_program=UserProgram::where('user_id')->where('is_completed','=',null)->first();
+        if(!$check_program){
+            return response()->json(['error'=>'No Program Assigned']);
+        }
         if(!Auth::user()){
             return response()->json(['user' => 'Not Authorized']);
         }
